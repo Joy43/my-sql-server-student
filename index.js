@@ -6,13 +6,32 @@ const app = express();
 // express.use(cors())
 app.use(express.json());
 
-// Get All student
-app.get("/students",(req,res)=>{
-    db.query("SELECT * FROM student_details",(err,results)=>{
-        if(err) return res.status(500).json({err:err.message})
-            res.json(results);
-    })
-})
+// Get All Students OR Search by Name
+app.get("/students", (req, res) => {
+    const { name, email } = req.query;
+    let sql = "SELECT * FROM student_details";
+    let values = [];
+
+    if (name || email) {
+        sql += " WHERE";
+        const conditions = [];
+        if (name) {
+            conditions.push(" first_name LIKE ?");
+            values.push(`%${name}%`);
+        }
+        if (email) {
+            conditions.push(" email LIKE ?");
+            values.push(`%${email}%`);
+        }
+        sql += conditions.join(" AND ");
+    }
+
+    db.query(sql, values, (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
+
 
 // get single id
 app.get("/students/:id",(req,res)=>{
