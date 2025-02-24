@@ -1,0 +1,5 @@
+✅ Create a new student – POST /students
+✅ Get all students – GET /students
+✅ Get a specific student by ID – GET /students/:id
+✅ Update student details – PUT /students/:id
+✅ Delete a student – DELETE /students/:id
